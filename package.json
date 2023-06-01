@@ -1,0 +1,25 @@
+{
+  "name": "be-assessment",
+  "version": "1.0.0",
+  "description": "Bosta Backend assessment.",
+  "main": "main.js",
+  "scripts": {
+    "start": "nodemon start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mbatsh99/be-assessment.git"
+  },
+  "author": "Mahmoud Ezzat",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mbatsh99/be-assessment/issues"
+  },
+  "homepage": "https://github.com/mbatsh99/be-assessment#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.22"
+  }
+}
