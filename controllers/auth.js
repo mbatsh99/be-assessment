@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const transport = require("../config/nodemailer");
 
 const createToken = (id, email) => {
   const token = jwt.sign(
@@ -31,13 +32,36 @@ exports.PostAddUser = async (req, res, next) => {
 
     encryptedPassword = await bcrypt.hash(password, 10);
 
+    const confirmationCode = jwt.sign(
+      {
+        email,
+      },
+      process.env.TOKEN_KEY
+    );
+
+    console.log("confirmation code: ", confirmationCode);
+
     const user = await User.create({
       email: email.toLowerCase(),
       password: encryptedPassword,
       status: "Pending",
+      confirmationCode,
     });
 
     const token = createToken(user._id, email);
+
+    transport
+      .sendMail({
+        from: "bostaAssissgment2023@gmail.com",
+        to: email,
+        subject: "Please confirm your account",
+        html: `<h1>Email Confirmation</h1>
+        <h2>Hello ${email}</h2>
+        <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
+        <a href=http://localhost:3000/confirm/${confirmationCode}> Click here</a>
+        </div>`,
+      })
+      .catch((err) => console.log(err));
 
     return res.status(200).json({ email, token });
   } catch (err) {
@@ -66,6 +90,26 @@ exports.postSignIn = async (req, res, next) => {
     const token = createToken(user._id, email);
 
     return res.status(201).json({ email, token });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "something went wrong." });
+  }
+};
+
+exports.getVerifyUser = async (req, res, next) => {
+  try {
+    const { verificationCode } = req.params;
+
+    const user = await User.findOne({ confirmationCode: verificationCode });
+    if (user.status === "Active")
+      return res.status(401).json({ message: "User Already Verified" });
+    if (!user) return res.status(401).json({ message: "User not found!" });
+
+    user.status = "Active";
+
+    const result = await user.save();
+
+    return res.status(200).json({ message: "User Verified" });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "something went wrong." });
