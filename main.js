@@ -1,9 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
+require("./config/database").connect();
+require("dotenv").config();
+
 const app = express();
 
-const mainRoute = require("./routes/index");
+const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -19,6 +23,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(mainRoute);
+app.use(userRoutes);
+app.use(authRoutes);
 
-app.listen(3000);
+const { API_PORT } = process.env;
+const port = process.env.PORT || API_PORT;
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
