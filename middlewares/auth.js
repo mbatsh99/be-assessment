@@ -12,7 +12,6 @@ const verifyEmail = async (req, res, next) => {
   }
   try {
     const decodedToken = jwt.verify(token, TOKEN_KEY);
-    console.log("token: ", decodedToken);
 
     req.user = decodedToken;
 

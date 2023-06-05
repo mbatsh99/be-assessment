@@ -12,9 +12,7 @@ exports.connect = () => {
       // useCreateIndex: true,
       // useruseFindAndModify: false,
     })
-    .then(() => {
-      console.log("Successfully connected to database");
-    })
+    .then(() => {})
     .catch((error) => {
       console.log("database connection failed. exiting now...");
       console.error(error);
