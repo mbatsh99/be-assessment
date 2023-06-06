@@ -6,5 +6,7 @@ const auth = require("../middlewares/auth");
 const userController = require("../controllers/user");
 
 router.post("/check", auth, userController.postAddCheck);
+router.get("/check", auth, userController.getCheckReport);
+router.delete("/check", userController.deleteAllPings);
 
 module.exports = router;

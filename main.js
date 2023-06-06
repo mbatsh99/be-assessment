@@ -4,6 +4,9 @@ const bodyParser = require("body-parser");
 require("./config/database").connect();
 require("dotenv").config();
 
+const Producer = require("./jobs/producer");
+const Consumer = require("./jobs/consumer");
+
 const app = express();
 
 const userRoutes = require("./routes/userRoutes");
@@ -28,6 +31,12 @@ app.use(authRoutes);
 
 const { API_PORT } = process.env;
 const port = process.env.PORT || API_PORT;
+
+const producer = new Producer();
+const consumer = new Consumer();
+
+producer.start();
+consumer.start();
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
